@@ -1,0 +1,33 @@
+[project]
+name = "aequilibrium"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "jtapia-ensmbl", email = "jesus@ensmbl.ca" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.4.0",
+]
+
+[project.scripts]
+aequilibrium = "aequilibrium:main"
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=src",
+    "--cov-report=term-missing",
+]
