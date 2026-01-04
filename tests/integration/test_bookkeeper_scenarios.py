@@ -17,7 +17,7 @@ def bk():
     return BookKeeper()
 
 
-def test_multi_day_scenario(bk):
+def test_multi_day_scenario(bk: BookKeeper):
     """
     Test a realistic multi-day portfolio scenario.
     This test simulates a portfolio over two days, checking portfolio value,
@@ -59,7 +59,7 @@ def test_multi_day_scenario(bk):
     assert new_leverage == pytest.approx(0.900883, abs=1e-5)
 
 
-def test_single_asset_portfolio(bk):
+def test_single_asset_portfolio(bk: BookKeeper):
     """Test portfolio with only one non-cash asset."""
     # Portfolio: $80k in one stock, $20k cash
     holdings = np.array([80000.0, 20000.0])
@@ -79,7 +79,7 @@ def test_single_asset_portfolio(bk):
     assert port_return == pytest.approx(0.04, abs=1e-5)  # 4% return overall
 
 
-def test_all_cash_portfolio(bk):
+def test_all_cash_portfolio(bk: BookKeeper):
     """Test portfolio with no asset exposure (all cash)."""
     holdings = np.array([100000.0])  # Just cash
     returns = np.array([0.0])
@@ -98,7 +98,7 @@ def test_all_cash_portfolio(bk):
     assert port_return == pytest.approx(0.0)
 
 
-def test_short_positions(bk):
+def test_short_positions(bk: BookKeeper):
     """Test portfolio with short positions."""
     # Long $60k, Short $20k, Cash $60k
     holdings = np.array([60000.0, -20000.0, 60000.0])
@@ -120,7 +120,7 @@ def test_short_positions(bk):
     assert port_return == pytest.approx(-0.02, abs=1e-5)
 
 
-def test_zero_portfolio_value(bk):
+def test_zero_portfolio_value(bk: BookKeeper):
     """Test edge case of zero portfolio value."""
     holdings_zero = np.array([0.0, 0.0, 0.0])
 
@@ -129,11 +129,16 @@ def test_zero_portfolio_value(bk):
     ret = bk.portfolio_return(holdings_zero, holdings_next)
     assert np.isnan(ret)
 
-def test_negative_portfolio_value():
+
+def test_negative_portfolio_value(bk: BookKeeper):
     """Test portfolio that goes negative (bankruptcy scenario)."""
     # Highly leveraged short position
-    holdings = np.array([50000.0, -100000.0, 30000.0])  # v_t = -20k (bankrupt!)
-    
-    # TODO: What should happen here?
-    # Should we allow negative portfolio values?
-    # Should compute_weights work? (dividing by negative number)
+    holdings = np.array([50000.0, -100000.0, 30000.0])
+
+    # We allow negative portfolio values
+    vt = bk.portfolio_value(holdings)
+    assert vt == -20000
+
+    # Compute_weights should stillwork?
+    wt = bk.compute_weights(holdings)
+    np.testing.assert_allclose(wt, np.array([-2.5, 5.0, -1.5]))

@@ -46,9 +46,9 @@ class BookKeeper:
         """
         vt = self.portfolio_value(holdings)
         if vt == 0:
-            # TODO: Decide how to handle portfolio value = 0
             raise ValueError(
-                "Portfolio value is zero; cannot compute weights.")
+                "Cannot compute weights: portfolio value is zero."
+            )
         wt = holdings/vt
         return wt
 
