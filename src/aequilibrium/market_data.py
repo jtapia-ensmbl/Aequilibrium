@@ -20,7 +20,7 @@ class MarketData:
     metrics.
     """
 
-    def returns(self, tickers, start_date, end_date):
+    def fetch_returns(self, tickers, start_date, end_date):
         """
         Load historical stock price data and compute daily returns.
 
@@ -45,7 +45,9 @@ class MarketData:
                            end=end_date, auto_adjust=True)
 
         # Calculate daily fractional change (daily returns)
-        rets = data['Close'].pct_change()
+        # Before calculating % change, ensure no missing gaps exist by copying 
+        # the previous day's price into any missing slots.
+        rets = data['Close'].ffill().pct_change(fill_method=None)
         # Drop the first row (NaN from pct_change)
         rets = rets.dropna()
 
