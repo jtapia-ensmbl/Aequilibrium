@@ -1,3 +1,14 @@
+"""
+BookKeeper Module
+
+This module provides tools for portfolio accounting and risk analysis.
+It includes methods to compute portfolio value, weights, leverage, 
+update holdings with realized returns, and calculate portfolio returns.
+
+The BookKeeper handles both asset and cash positions, supports long-only and
+leveraged portfolios, and ensures consistent, deterministic outputs.
+"""
+
 import numpy as np
 
 
@@ -25,7 +36,7 @@ class BookKeeper:
         vt = holdings.sum()
         return vt
 
-    def compute_weights(self, holdings) -> np.array:
+    def compute_weights(self, holdings):
         """
         Convert holdings to weights.
 
